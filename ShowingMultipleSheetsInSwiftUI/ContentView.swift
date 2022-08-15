@@ -7,10 +7,46 @@
 
 import SwiftUI
 
+struct Product {
+    let id: UUID
+    let name: String
+}
+
+enum Sheets: Identifiable {
+    case add
+    case detail(Product)
+    
+    var id: String {
+        switch self {
+        case .add:
+            return "add"
+        case .detail(let product):
+            return product.id.uuidString
+        }
+    }
+}
+
 struct ContentView: View {
+    
+    @State private var activeSheet: Sheets?
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack {
+            Button("Show Add") {
+                activeSheet = .add
+            }
+            
+            Button("Show Details") {
+                activeSheet = .detail(Product(id: UUID(), name: "MacBooks"))
+            }
+        }.sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .add:
+                Text("ADD")
+            case .detail(let product):
+                Text(product.name)
+            }
+        }
     }
 }
 
